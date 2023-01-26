@@ -1,5 +1,8 @@
 package application.model.entities;
 
+import application.model.exceptions.AccountException;
+import application.view.AccountViewText;
+
 public class Account {
 
     private Integer number;
@@ -7,50 +10,28 @@ public class Account {
     private Double balance;
     private Double withdrawLimit;
 
-    public Account() {
-    }
-
-    public Account(Integer number, String holder, Double balance, Double withdrawLimit) {
+    public Account(Integer number, String holder, Double amount, Double withdrawLimit) {
         this.number = number;
         this.holder = holder;
-        this.balance = balance;
+        deposit(amount);
         this.withdrawLimit = withdrawLimit;
     }
 
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public String getHolder() {
-        return holder;
-    }
-
-    public void setHolder(String holder) {
-        this.holder = holder;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public Double getWithdrawLimit() {
-        return withdrawLimit;
-    }
-
-    public void setWithdrawLimit(Double withdrawLimit) {
-        this.withdrawLimit = withdrawLimit;
-    }
-
-    public void deposit(Double amount){
+    public void deposit(Double amount) {
         balance += amount;
     }
 
-    public void withdraw(Double amount){
-        balance -= amount;
+    public void withdraw(Double amount) {
+        try {
+            if (amount <= balance && amount <= withdrawLimit) {
+                balance -= amount;
+            }
+        } catch (AccountException e) {
+            if (amount > withdrawLimit) {
+                System.out.print(AccountViewText.withdrawLimit);
+            }
+        }
+
     }
 }
 
