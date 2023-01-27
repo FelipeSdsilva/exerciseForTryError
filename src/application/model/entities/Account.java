@@ -10,10 +10,10 @@ public class Account {
     private Double balance;
     private Double withdrawLimit;
 
-    public Account(Integer number, String holder, Double amount, Double withdrawLimit) {
+    public Account(Integer number, String holder, Double balance, Double withdrawLimit) {
         this.number = number;
         this.holder = holder;
-        deposit(amount);
+        this.balance = balance;
         this.withdrawLimit = withdrawLimit;
     }
 
@@ -22,16 +22,20 @@ public class Account {
     }
 
     public void withdraw(Double amount) {
-        try {
-            if (amount <= balance && amount <= withdrawLimit) {
-                balance -= amount;
-            }
-        } catch (AccountException e) {
-            if (amount > withdrawLimit) {
-                System.out.print(AccountViewText.withdrawLimit);
-            }
+        if (amount <= balance && amount <= withdrawLimit) {
+            balance -= amount;
         }
+        if (amount > withdrawLimit) {
+            throw new AccountException(AccountViewText.errorWithdraw + AccountViewText.exceedsWithdrawLimitError);
+        }
+        if (amount > balance) {
+            throw new AccountException(AccountViewText.errorWithdraw + AccountViewText.notEnoughBalanceError);
+        }
+    }
 
+    @Override
+    public String toString() {
+        return "New balance: " + String.format("%.2f", balance);
     }
 }
 
